@@ -1,43 +1,36 @@
 import React, { useEffect, useState } from 'react';
+import "./List.js";
 import axios from 'axios';
 
 
 export default function List() {
-  const [students, setStudents] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [users, setUsers] = useState([]);
+
   const [studentsPerPage] = useState(10); // Show 5 per page
 
-  useEffect(() => {
+  const fetchUsers = () => {
     axios.get("http://localhost:5000/students")
-      .then(res => setStudents(res.data.students))
-      .catch(err => console.error("Error fetching students"));
-  }, []);
-
-  // Get current students
-  const indexOfLastStudent = currentPage * studentsPerPage;
-  const indexOfFirstStudent = indexOfLastStudent - studentsPerPage;
-  const currentStudents = students.slice(indexOfFirstStudent, indexOfLastStudent);
-
-  const totalPages = Math.ceil(students.length / studentsPerPage);
-
-  const handleClick = (pageNum) => {
-    setCurrentPage(pageNum);
+      .then(res => setUsers(res.data.students))
+      .catch(err => console.error("Error fetching users:",err));
   };
+
+  useEffect(() => {
+    fetchUsers();
+  },[]);
 
   const handleDelete =(id)=>{
     axios.delete("http:///localhost:5000/studentdelete/${id}")
-    .then(()=>(
-     alert("deleted")
-    ))
-  }
-
-
-
+    .then(()=>{
+     alert("deleted");
+     fetchUsers();
+  })
+    .catch(err => console.error("Error deleting user:", err));
+  };
 
 
   return (
     <div className='col-md-10 content'>
-      <h1>Student List</h1>
+      <h1>Student New List </h1>
       <table className='table table-bordered table-striped'>
         <thead className='thead-dark'>
           <tr>
@@ -49,19 +42,19 @@ export default function List() {
           </tr>
         </thead>
         <tbody>
-          {currentStudents.map((student, index) => (
-            <tr key={index}>
-              <td>{student.id}</td>
-              <td>{student.name}</td>
-              <td>{student.email}</td>
-              <td>{student.phone}</td>
-              <button onClick={() => handleDelete(student.id)}>Delete</button>
+          {currentStudents.map((user, index) => (
+            <tr key={user.id}>
+              <td>{user.id}</td>
+              <td>{user.name}</td>
+              <td>{user.email}</td>
+              <td>{user.phone}</td>
+              <button onClick={() => handleDelete(user.id)}>Delete</button>
             </tr>
           ))}
         </tbody>
       </table>
 
-      {/* Pagination */}
+      {/* Pagination
       <nav>
         <ul className="pagination">
           <li className={`page-item ${currentPage === 1 && 'disabled'}`}>
@@ -78,7 +71,7 @@ export default function List() {
             <button className="page-link" onClick={() => handleClick(currentPage + 1)}>Next</button>
           </li>
         </ul>
-      </nav>
+      </nav> */}
     </div>
   );
-}
+};
