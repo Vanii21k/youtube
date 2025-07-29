@@ -19,7 +19,7 @@ export default function List() {
   },[]);
 
   const handleDelete =(id)=>{
-    axios.delete("http:///localhost:5000/studentdelete/${id}")
+    axios.delete("http://localhost:5000/studentdelete/${id}")
     .then(()=>{
      alert("deleted");
      fetchUsers();
@@ -42,7 +42,7 @@ export default function List() {
           </tr>
         </thead>
         <tbody>
-          {currentStudents.map((user, index) => (
+          {users.map((user, index) => (
             <tr key={user.id}>
               <td>{user.id}</td>
               <td>{user.name}</td>
